@@ -51,6 +51,9 @@ model Pet {
   requireds    String[]
   create_at    DateTime        @default(now())
 
+  org    Org    @relation(fields: [org_id], references: [id])
+  org_id String
+
   @@map("pets")
 }
 
@@ -68,6 +71,7 @@ model Org {
   phone_number  String
   role          Role     @default(MEMBER)
   create_at     DateTime @default(now())
+  pets          Pet[]
 
   @@map("orgs")
 }
