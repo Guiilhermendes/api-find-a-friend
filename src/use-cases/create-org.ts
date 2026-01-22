@@ -1,5 +1,6 @@
 import type { OrgsRepository } from "@/repositories/orgs-repository.js";
 import { hash } from "bcryptjs";
+import { OrgAlreadyExistsError } from "./errors/org-alreary-exists-error.js";
 
 interface CreateOrgUseCaseRequest {
     email: string
@@ -17,9 +18,7 @@ export class CreateOrgUseCase {
 
         const orgWithSameEmail = await  this.orgsRepository.findByEmail(email);
 
-        if (orgWithSameEmail) {
-            throw new Error('E-mail already exists.')
-        }
+        if (orgWithSameEmail) { throw new OrgAlreadyExistsError(); }
 
         await this.orgsRepository.create({
             email,
