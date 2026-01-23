@@ -20,12 +20,14 @@ export class CreateOrgUseCase {
 
         if (orgWithSameEmail) { throw new OrgAlreadyExistsError(); }
 
-        await this.orgsRepository.create({
+        const org = await this.orgsRepository.create({
             email,
             password_hash,
             street,
             city,
             phone_number
-        })
+        });
+
+        return { org }
     }
 }
