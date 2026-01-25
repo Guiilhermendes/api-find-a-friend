@@ -13,7 +13,7 @@ describe('Create Org Use Case', () => {
         sut = new CreateOrgUseCase(orgsRepository);
     });
 
-    it('should to be able to create a org', async () => {
+    it('should be able to create a org', async () => {
         const { org } = await sut.execute({
             email: 'email@example.com',
             password: '123456',
@@ -42,7 +42,7 @@ describe('Create Org Use Case', () => {
     });
 
 
-    it('should not to be able to create with same email twice', async () => {
+    it('should not be able to create with same email twice', async () => {
         const email: string = 'email@example.com';
         
         await sut.execute({
