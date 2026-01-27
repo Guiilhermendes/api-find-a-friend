@@ -3,6 +3,16 @@ import { Prisma, type Org } from "@prisma/client";
 import type { OrgsRepository } from "../orgs-repository.js";
 
 export class PrismaOrgsRepository implements OrgsRepository {
+    async findById(id: string) {
+        const org = await prisma.org.findUnique({
+            where: {
+                id
+            }
+        });
+
+        return org;
+    }
+
     async findByEmail(email: string) {
         const org = await prisma.org.findUnique({
             where: {
@@ -10,7 +20,7 @@ export class PrismaOrgsRepository implements OrgsRepository {
             }
         });
 
-        return org
+        return org;
     }
 
     async create(data: Prisma.OrgCreateInput) {

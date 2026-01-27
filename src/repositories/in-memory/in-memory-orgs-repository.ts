@@ -5,9 +5,14 @@ import type { OrgsRepository } from "../orgs-repository.js";
 export class InMemoryOrgsRepository implements OrgsRepository {
     public items: Org[] = []
 
+    async findById(id: string) {
+        const org = this.items.find(item => item.id === id);
+        return org ?? null;
+    }
+
     async findByEmail(email: string) {
         const org = this.items.find(item => item.email === email);
-        return org ?? null
+        return org ?? null;
     }
 
     async create(data: Prisma.OrgCreateInput) {
@@ -22,7 +27,7 @@ export class InMemoryOrgsRepository implements OrgsRepository {
             create_at: new Date()
         }
         
-        this.items.push(org)
-        return org
+        this.items.push(org);
+        return org;
     }
 }
