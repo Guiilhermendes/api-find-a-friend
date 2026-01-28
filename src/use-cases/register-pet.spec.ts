@@ -4,6 +4,8 @@ import { RegisterPetUseCase } from "./register-pet.js";
 import { InMemoryOrgsRepository } from "@/repositories/in-memory/in-memory-orgs-repository.js";
 import { InMemoryPetsReposutory } from "@/repositories/in-memory/in-memory-pets-repository.js";
 import { hash } from "bcryptjs";
+import { randomUUID } from "node:crypto";
+import { ResourceNotFoundError } from "./errors/resource-not-found-error.js";
 
 let petsRepository: InMemoryPetsReposutory;
 let orgsRepository: InMemoryOrgsRepository;
@@ -13,7 +15,7 @@ describe('Register Pet Use Case', () => {
     beforeEach(() => {
         orgsRepository = new InMemoryOrgsRepository();
         petsRepository = new InMemoryPetsReposutory();
-        sut = new RegisterPetUseCase(petsRepository);
+        sut = new RegisterPetUseCase(petsRepository, orgsRepository);
     });
 
     it('should be able to register a pet', async () => {
@@ -39,5 +41,22 @@ describe('Register Pet Use Case', () => {
         });
 
         expect(pet.id).toEqual(expect.any(String));
+    });
+
+    it('should not be able to register a pet in the wrong org', async () => {
+        await expect(
+            sut.execute({
+                name: 'Astolfo',
+                about: 'Um cãozinho muito bonzinho',
+                age: 1,
+                size: 'SMALL',
+                stamine: 'HIGH',
+                independence: 'MEDIUM',
+                habitat: 'SPACIOUS',
+                imgs_url: ['dogPicture.png'],
+                requireds: ['Ossinho'],
+                orgId: randomUUID()
+            })
+        ).rejects.toBeInstanceOf(ResourceNotFoundError)
     });
 })
