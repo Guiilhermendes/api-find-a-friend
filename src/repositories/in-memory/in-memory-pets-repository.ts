@@ -1,14 +1,25 @@
 import type { Prisma, Pet } from "@prisma/client";
-import type { PetsRepository } from "../pets-repository.js";
+import type { PetsQueryParams, PetsRepository } from "../pets-repository.js";
 import { randomUUID } from "node:crypto";
 
 export class InMemoryPetsReposutory implements PetsRepository {
     public items: Pet[] = [];
 
-    async findManyPetsByOrgs(orgsId: string[], page: number) {
-        return this.items
-            .filter(item => orgsId.includes(item.org_id))
-            .slice((page - 1) * 10, page * 10);
+    async findManyPetsByOrgs(orgsId: string[], page: number, queryParams: PetsQueryParams) {
+        let petsFound = this.items.filter(item => orgsId.includes(item.org_id));
+        if (Object.keys(queryParams).length > 0) {
+            for (const [key, value] of Object.entries(queryParams)) {
+                petsFound = petsFound.filter(pet => {
+                    if (key === 'age') {
+                        return Number(pet.age) <= Number(value);
+                    } else {
+                        return pet[key as keyof Pet] === value
+                    }
+                })
+            }
+        }
+        
+        return petsFound.slice((page - 1) * 10, page * 10);
     }
 
     async create(data: Prisma.PetUncheckedCreateInput) {

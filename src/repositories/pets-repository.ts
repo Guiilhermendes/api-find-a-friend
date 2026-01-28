@@ -1,6 +1,13 @@
-import type { Pet, Prisma } from "@prisma/client";
+import type { Pet, PetHabitat, PetIndependence, PetSize, PetStamina, Prisma } from "@prisma/client";
 
+export interface PetsQueryParams {
+    age?: number | undefined
+    size?: PetSize | undefined
+    stamine?: PetStamina | undefined
+    independence?: PetIndependence | undefined
+    habitat?: PetHabitat | undefined
+}
 export interface PetsRepository {
-    findManyPetsByOrgs(orgsId: string[], page: number): Promise<Pet[]>
+    findManyPetsByOrgs(orgsId: string[], page: number, queryParams: PetsQueryParams): Promise<Pet[]>
     create(data: Prisma.PetUncheckedCreateInput): Promise<Pet>
 }
