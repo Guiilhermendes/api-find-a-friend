@@ -5,6 +5,10 @@ import { randomUUID } from "node:crypto";
 export class InMemoryPetsReposutory implements PetsRepository {
     public items: Pet[] = [];
 
+    async findById(id: string) {
+        return this.items.find(item => item.id === id) ?? null;
+    }
+
     async findManyPetsByOrgs(orgsId: string[], page: number, queryParams: PetsQueryParams) {
         let petsFound = this.items.filter(item => orgsId.includes(item.org_id));
         if (Object.keys(queryParams).length > 0) {
@@ -24,7 +28,7 @@ export class InMemoryPetsReposutory implements PetsRepository {
 
     async create(data: Prisma.PetUncheckedCreateInput) {
         const pet: Pet = {
-            id: randomUUID(),
+            id: data.id ?? randomUUID(),
             name: data.name,
             about: data.about,
             age: data.age,

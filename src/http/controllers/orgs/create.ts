@@ -1,9 +1,9 @@
 import { OrgAlreadyExistsError } from "@/use-cases/errors/org-alreary-exists-error.js";
-import { makeRegisterUseCase } from "@/use-cases/factories/make-register-use-case.js";
+import { makeCreateOrgUseCase } from "@/use-cases/factories/make-create-org-use-case.js";
 import type { FastifyReply, FastifyRequest } from "fastify";
 import z from "zod";
 
-export async function register(request: FastifyRequest, reply: FastifyReply) {
+export async function create(request: FastifyRequest, reply: FastifyReply) {
     const registerBodySchema = z.object({
         email: z.string().email(),
         password: z.string().min(6),
@@ -21,7 +21,7 @@ export async function register(request: FastifyRequest, reply: FastifyReply) {
     } = registerBodySchema.parse(request.body);
 
     try { 
-        const createOrgUseCase = await makeRegisterUseCase();
+        const createOrgUseCase = await makeCreateOrgUseCase();
         await createOrgUseCase.execute({email, password, street, city, phone_number});
     } catch(error) {
         if (error instanceof OrgAlreadyExistsError) {

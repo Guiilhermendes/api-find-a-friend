@@ -8,6 +8,7 @@ export interface PetsQueryParams {
     habitat?: PetHabitat | undefined
 }
 export interface PetsRepository {
+    findById(id: string): Promise<Pet | null>
     findManyPetsByOrgs(orgsId: string[], page: number, queryParams: PetsQueryParams): Promise<Pet[]>
     create(data: Prisma.PetUncheckedCreateInput): Promise<Pet>
 }

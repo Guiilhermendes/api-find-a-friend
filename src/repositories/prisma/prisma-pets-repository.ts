@@ -3,6 +3,16 @@ import type { PetsQueryParams, PetsRepository } from "../pets-repository.js";
 import { prisma } from "@/lib/prisma.js";
 
 export class PrismaPetsRepository implements PetsRepository {
+    async findById(id: string) {
+        const pet = await prisma.pet.findUnique({
+            where: {
+                id
+            }
+        });
+
+        return pet;
+    }
+
     async findManyPetsByOrgs(orgsId: string[], page: number, queryParams: PetsQueryParams) {
         const pets = await prisma.pet.findMany({
             where: {
