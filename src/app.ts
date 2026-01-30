@@ -5,6 +5,11 @@ import { petsRoutes } from "./http/controllers/pets/routes.js";
 import { orgsRoutes } from "./http/controllers/orgs/routes.js";
 import { ZodError } from "zod";
 import { env } from "./env/index.js";
+import fastifyJwt from "@fastify/jwt";
+
+app.register(fastifyJwt, {
+    secret: env.JWT_SECRET
+})
 
 app.register(petsRoutes)
 app.register(orgsRoutes)
