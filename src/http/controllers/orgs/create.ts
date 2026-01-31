@@ -21,7 +21,7 @@ export async function create(request: FastifyRequest, reply: FastifyReply) {
     } = registerBodySchema.parse(request.body);
 
     try { 
-        const createOrgUseCase = await makeCreateOrgUseCase();
+        const createOrgUseCase = makeCreateOrgUseCase();
         await createOrgUseCase.execute({email, password, street, city, phone_number});
     } catch(error) {
         if (error instanceof OrgAlreadyExistsError) {
