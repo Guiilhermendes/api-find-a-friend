@@ -4,7 +4,7 @@ import type { FastifyReply, FastifyRequest } from "fastify";
 
 export async function profile(request: FastifyRequest, reply: FastifyReply) {
     try {
-        const getOrgProfileUseCase = await makeGetOrgProfileUseCase();
+        const getOrgProfileUseCase = makeGetOrgProfileUseCase();
         const { org } = await getOrgProfileUseCase.execute({orgId: request.user.sub});
         return reply.status(200).send({
             org: {

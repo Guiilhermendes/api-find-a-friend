@@ -1,6 +1,7 @@
-import { prisma } from "@/lib/prisma.js";
+import { ResourceNotFoundError } from "@/use-cases/errors/resource-not-found-error.js";
+import { makeRegisterPetUseCase } from "@/use-cases/factories/make-register-pet-use-case.js";
+import { PetHabitat, PetIndependence, PetSize, PetStamina } from "@prisma/client";
 import type { FastifyReply, FastifyRequest } from "fastify";
-import { randomUUID } from "node:crypto";
 import z from "zod";
 
 export async function register(request: FastifyRequest, reply: FastifyReply) {
@@ -8,12 +9,13 @@ export async function register(request: FastifyRequest, reply: FastifyReply) {
         name: z.string(),
         about: z.string(),
         age: z.int(),
-        size: z.enum(['SMALL', 'MEDIUM', 'LARGE']),
-        stamine: z.enum(['LOW', 'MEDIUM', 'HIGH']),
-        independence: z.enum(['LOW', 'MEDIUM', 'HIGH']),
-        habitat: z.enum(['SPACIOUS', 'LIMITED', 'ENCLOSED', 'FREE']),
+        size: z.enum(PetSize),
+        stamine: z.enum(PetStamina),
+        independence: z.enum(PetIndependence),
+        habitat: z.enum(PetHabitat),
         imgs_url: z.array(z.string()),
-        requireds: z.array(z.string())
+        requireds: z.array(z.string()),
+        orgId: z.string().uuid()
     });
     
     const {
@@ -25,13 +27,13 @@ export async function register(request: FastifyRequest, reply: FastifyReply) {
         independence,
         habitat,
         imgs_url,
-        requireds
+        requireds,
+        orgId
     } = registerBodySchema.parse(request.body);
-
-    const org_id = randomUUID(); //Temporary
-
-    await prisma.pet.create({
-        data: {
+    
+    try {
+        const registerPetUseCase = makeRegisterPetUseCase();
+        await registerPetUseCase.execute({
             name,
             about,
             age,
@@ -41,9 +43,14 @@ export async function register(request: FastifyRequest, reply: FastifyReply) {
             habitat,
             imgs_url,
             requireds,
-            org_id
+            orgId
+        });
+        return reply.status(201).send()
+    } catch(error) {
+        if (error instanceof ResourceNotFoundError) {
+            return reply.status(404).send({ message: error.message });
         }
-    });
 
-    return reply.status(201).send()
+        return error;
+    }
 }

@@ -12,7 +12,7 @@ export async function authenticate(request: FastifyRequest, reply: FastifyReply)
     const { email, password } = authenticateBodySchema.parse(request.body);
 
     try {
-        const authenticateUseCase = await makeAuthenticateUseCase();
+        const authenticateUseCase = makeAuthenticateUseCase();
         const { org } = await authenticateUseCase.execute({ email, password });
 
         const token = await reply.jwtSign({}, {
