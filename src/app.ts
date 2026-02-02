@@ -1,5 +1,6 @@
 import fastify from "fastify";
 export const app = fastify();
+import fastifyCookie from '@fastify/cookie';
 
 import { petsRoutes } from "./http/controllers/pets/routes.js";
 import { orgsRoutes } from "./http/controllers/orgs/routes.js";
@@ -8,8 +9,17 @@ import { env } from "./env/index.js";
 import fastifyJwt from "@fastify/jwt";
 
 app.register(fastifyJwt, {
-    secret: env.JWT_SECRET
-})
+    secret: env.JWT_SECRET,
+    cookie: {
+        cookieName: 'refreshToken',
+        signed: false
+    },
+    sign: {
+        expiresIn: '10m'
+    }
+});
+
+app.register(fastifyCookie);
 
 app.register(petsRoutes)
 app.register(orgsRoutes)

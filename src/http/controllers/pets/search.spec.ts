@@ -69,5 +69,6 @@ describe('Search (e2e)', () => {
             .send();
 
         expect(response.statusCode).toEqual(200);
+        expect(response.body.pets).toHaveLength(2);
     });
 });
