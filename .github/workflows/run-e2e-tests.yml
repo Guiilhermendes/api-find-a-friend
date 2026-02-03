@@ -15,7 +15,7 @@ jobs:
         env: 
           POSTGRESQL_USERNAME: docker
           POSTGRESQL_PASSWORD: docker
-          POSTGRESQL_DATABASE: apisolid
+          POSTGRESQL_DATABASE: apifriend
 
     steps:
       - uses: actions/checkout@v3
@@ -28,4 +28,4 @@ jobs:
       - run: npm run test:e2e
         env:
           JWT_SECRET: jwt-secret
-          DATABASE_URL: 'postgres://docker:docker@localhost:5432/apisolid?schema=public'
+          DATABASE_URL: 'postgres://docker:docker@localhost:5432/apifriend?schema=public'
