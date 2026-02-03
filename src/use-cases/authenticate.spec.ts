@@ -54,7 +54,7 @@ describe('Authenticate Use Case', () => {
     it('should not be able to authenticate with wrong password', async () => {
         const email = 'johnDoe@example.com';
         const password = '123456';
-
+ 
         await orgsRepository.create({
             email,
             password_hash: await hash(password, 6),
